@@ -1,4 +1,44 @@
 import express from 'express';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+import usersRouter from './routes/users.js';
+
+//environment variables
+dotenv.config();
+
+//connect to MongoDb database
+mongoose.connect(process.env.ATLAS_URI);
+
+const app = express();
+            //production     ||  development
+const PORT = process.env.PORT || 4000;
+
+//Middlewares
+app.use(morgan('dev'));
+app.use(express.json());
+
+
+//Routes
+app.get('/', (req, res) => {
+    res.send("Welcome to the User Auth API!");
+});
+app.use('/users', usersRouter);
+
+
+//Global Error Middleware
+app.use((err, req, res, next) => {
+    res.send("Something went really wrong!");
+});
+
+
+app.listen(PORT, () => {
+    console.log(`Server is running on PORT: ${PORT}`);
+});
+
+
+
+/*import express from 'express';
 import mongoose from 'mongoose';
 
 import learnerSchema from './learner.js';
@@ -61,3 +101,4 @@ app.use((err, _req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT}`);
 });
+*/
